@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>mbrot</title>
+  </head>
+  <body onload="focusOnSubmit();">
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+
+    <div id="description">
+      <header>
+      <div style="text-align: center;">
+        <hr />
+        <h1>The Mandelbrot Set</h1>
+        <p class="headerText">In HTML5 Canvas and JavaScript</p>
+        <hr />
+      </div>
+      </header>
+
+      <form id="settingsForm">
+        <table>
+        <tr>
+          <td>Rendering time</td>
+          <td><span id="renderTime">0.0</span> seconds</td>
+        </tr>
+        <tr>
+          <td>Speed</td>
+          <td>
+            <span id="renderSpeed">0.00</span> pixels /
+            <span id="renderSpeedUnit">second</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Iterations</td>
+          <td>
+            <input class="textInput" size="4" type="text" id="steps" value="50"/>
+            <input type="checkbox" id="autoIterations" checked="checked"/>
+            <small>auto</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Escape radius</td>
+          <td><input class="textInput" size="4" type="text" id="escapeRadius" value="10.0"/></td>
+        </tr>
+        </table>
+      </form>
+    </div>
+
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>
