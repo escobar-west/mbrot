@@ -67,9 +67,14 @@ impl Universe {
         let x_off = center.re - dx * self.width as f32 * 0.5;
         let y_off = center.img - dx * self.height as f32 * 0.5;
 
-        for row in 0..self.height {
-            for col in 0..self.width { 
-                let pix_coord = Complex{re:x_off + dx * col as f32, img:y_off + dx * row as f32};
+        let mut px_idx: usize = 0;
+        let mut pix_coord = Complex{re: x_off,
+                                    img: y_off};
+
+        for _row in 0..self.height {
+            pix_coord.re = x_off;
+
+            for _col in 0..self.width { 
                 x = 0.0;
                 y = 0.0;
                 x2 = 0.0;
@@ -85,12 +90,15 @@ impl Universe {
                 }
 
                 unsafe {
-                    let pix = self.pixels.get_unchecked_mut((row * self.width + col) as usize);
+                    let pix = self.pixels.get_unchecked_mut(px_idx);
                     pix.r = if counter < max_iter {155} else {0};
                     pix.b = if counter < max_iter {255} else {0};
                     pix.g = if counter < max_iter {255} else {0};
                 }
+                pix_coord.re += dx;
+                px_idx += 1;
             }
+            pix_coord.img += dx;
         }
     }
 
