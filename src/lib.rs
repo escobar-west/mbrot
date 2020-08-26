@@ -8,9 +8,6 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-static MAX_HEIGHT: u32 = 800;
-static MAX_WIDTH: u32 = 1280;
-
 
 #[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
@@ -43,29 +40,47 @@ pub struct RGBA {
 pub struct Universe {
     width: u32,
     height: u32,
+    dx: f32,
     pixels: Vec<RGBA>,
 }
 
 
 #[wasm_bindgen]
 impl Universe {
-    pub fn new(width: u32, height: u32) -> Universe {
-        let width = if width > MAX_WIDTH {MAX_WIDTH} else {width};
-        let height = if height > MAX_HEIGHT {MAX_HEIGHT} else {height};
-        let max_pixels = MAX_WIDTH * MAX_HEIGHT;
-
-        let mut pixels: Vec<RGBA> = Vec::with_capacity(max_pixels as usize);
-        for _ in 0..width*height {
-            pixels.push(RGBA{r:0, g:255, b:0, a:255});
+    pub fn new(width: u32, height: u32, dx: f32) -> Universe {
+        let n_pixels = width * height;
+        let mut pixels: Vec<RGBA> = Vec::with_capacity(n_pixels as usize);
+        for _ in 0..n_pixels {
+            pixels.push(RGBA{r:0, g:0, b:0, a:255});
         }
-        Universe{width, height, pixels}
+        Universe{width, height, dx, pixels}
     }
 
 
-    pub fn render(&mut self, anchor: Complex, dx: f32) {
+    pub fn render(&mut self, anchor: Complex, max_iter: u32) {
         for (i, e) in self.pixels.iter_mut().enumerate() {
-            e.g = 0;
-            e.r = 255;
+            let i = i as u32;
+            let row = (i / self.width) as f32;
+            let col = (i % self.width) as f32;
+
+            let pix_coord = Complex::new(anchor.re + col * self.dx, anchor.img + row * self.dx);
+            let mut x = 0.0;
+            let mut y = 0.0;
+            let mut x2 = 0.0;
+            let mut y2 = 0.0;
+            let mut counter = 0;
+
+            while (x2 + y2 < 4.0) && (counter < max_iter) {
+                y = (x + x) * y + pix_coord.img;
+                x = x2 - y2 + pix_coord.re;
+                x2 = x * x;
+                y2 = y * y;
+                counter += 1;
+            }
+
+            e.r = if counter < max_iter {0} else {255};
+            e.b = if counter < max_iter {0} else {255};
+            e.g = if counter < max_iter {0} else {255};
         }
     }
 
