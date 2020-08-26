@@ -10,7 +10,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug)]
 pub struct Complex {
     re: f32,
     img: f32,
@@ -26,7 +25,6 @@ impl Complex {
 
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(C)]
 pub struct RGBA {
     r: u8,
@@ -67,6 +65,7 @@ impl Universe {
         let x_off = center.re - dx * self.width as f32 * 0.5;
         let y_off = center.img - dx * self.height as f32 * 0.5;
 
+        let mut pix: *mut RGBA;
         let mut pix_idx: usize = 0;
         let mut pix_coord = Complex{re: x_off,
                                     img: y_off};
@@ -87,10 +86,10 @@ impl Universe {
                     iter_counter += 1;
                 }
                 unsafe {
-                    let pix = self.pixels.get_unchecked_mut(pix_idx);
-                    pix.r = if iter_counter < max_iter {155} else {0};
-                    pix.b = if iter_counter < max_iter {255} else {0};
-                    pix.g = if iter_counter < max_iter {255} else {0};
+                    pix = self.pixels.get_unchecked_mut(pix_idx);
+                    (*pix).r = if iter_counter < max_iter {111} else {0};
+                    (*pix).b = if iter_counter < max_iter {255} else {0};
+                    (*pix).g = if iter_counter < max_iter {255} else {0};
                 }
                 pix_coord.re += dx;
                 pix_idx += 1;
