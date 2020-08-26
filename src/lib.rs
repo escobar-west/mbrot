@@ -49,6 +49,7 @@ impl Universe {
     pub fn new(width: u32, height: u32) -> Universe {
         let n_pixels = width * height;
         let mut pixels: Vec<RGBA> = Vec::with_capacity(n_pixels as usize);
+
         for _ in 0..n_pixels {
             pixels.push(RGBA{r:0, g:0, b:0, a:255});
         }
@@ -63,12 +64,12 @@ impl Universe {
         let mut y2: f32;
         let mut counter: u32;
 
-        let x_off = center.re - dx * self.width as f32 / 2.0;
-        let y_off = center.img - dx * self.height as f32 / 2.0;
+        let x_off = center.re - dx * self.width as f32 * 0.5;
+        let y_off = center.img - dx * self.height as f32 * 0.5;
 
         for row in 0..self.height {
             for col in 0..self.width { 
-                let pix_coord = Complex::new(x_off + dx * col as f32, y_off + dx * row as f32);
+                let pix_coord = Complex{re:x_off + dx * col as f32, img:y_off + dx * row as f32};
                 x = 0.0;
                 y = 0.0;
                 x2 = 0.0;
@@ -82,11 +83,12 @@ impl Universe {
                     y2 = y * y;
                     counter += 1;
                 }
+
                 unsafe {
-                    let e = self.pixels.get_unchecked_mut((row * self.width + col) as usize);
-                    e.r = if counter < max_iter {0} else {255};
-                    e.b = if counter < max_iter {255} else {0};
-                    e.g = if counter < max_iter {0} else {255};
+                    let pix = self.pixels.get_unchecked_mut((row * self.width + col) as usize);
+                    pix.r = if counter < max_iter {155} else {0};
+                    pix.b = if counter < max_iter {255} else {0};
+                    pix.g = if counter < max_iter {255} else {0};
                 }
             }
         }
