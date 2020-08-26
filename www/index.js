@@ -8,9 +8,9 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const universe = Universe.new(canvas.width, canvas.height);
-const cval = Complex.new(0.276159, .01);
+const cval = Complex.new(0.0, 0.0);
 const dx = 1.0/600;
-universe.render(cval, dx, 10000);
+universe.render(cval, dx, 100);
 
 const renderLoop = () => {
     draw();

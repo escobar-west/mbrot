@@ -57,19 +57,29 @@ impl Universe {
 
 
     pub fn render(&mut self, center: Complex, dx:f32, max_iter: u32) {
+        let mut row = 0.0;
+        let mut col = 0.0;
+        let mut x_off = 0.0;
+        let mut y_off = 0.0;
+        let mut x = 0.0;
+        let mut y = 0.0;
+        let mut x2 = 0.0;
+        let mut y2 = 0.0;
+        let mut counter = 0;
+
         for (i, e) in self.pixels.iter_mut().enumerate() {
             let i = i as u32;
-            let row = (i / self.width) as f32;
-            let col = (i % self.width) as f32;
-            let x_off = center.re - dx * self.width as f32 / 2.0;
-            let y_off = center.img - dx * self.height as f32 / 2.0;
+            row = (i / self.width) as f32;
+            col = (i % self.width) as f32;
+            x_off = center.re - dx * self.width as f32 / 2.0;
+            y_off = center.img - dx * self.height as f32 / 2.0;
 
             let pix_coord = Complex::new(x_off + col * dx, y_off + row * dx);
-            let mut x = 0.0;
-            let mut y = 0.0;
-            let mut x2 = 0.0;
-            let mut y2 = 0.0;
-            let mut counter = 0;
+            x = 0.0;
+            y = 0.0;
+            x2 = 0.0;
+            y2 = 0.0;
+            counter = 0;
 
             while (x2 + y2 < 4.0) && (counter < max_iter) {
                 y = (x + x) * y + pix_coord.img;
