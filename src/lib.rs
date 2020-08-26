@@ -57,8 +57,6 @@ impl Universe {
 
 
     pub fn render(&mut self, center: Complex, dx:f32, max_iter: u32) {
-        let mut row: f32;
-        let mut col: f32;
         let mut x: f32;
         let mut y: f32;
         let mut x2: f32;
@@ -68,29 +66,29 @@ impl Universe {
         let x_off = center.re - dx * self.width as f32 / 2.0;
         let y_off = center.img - dx * self.height as f32 / 2.0;
 
-        for (i, e) in self.pixels.iter_mut().enumerate() {
-            let i = i as u32;
-            row = (i / self.width) as f32;
-            col = (i % self.width) as f32;
+        for row in 0..self.height {
+            for col in 0..self.width { 
+                let pix_coord = Complex::new(x_off + dx * col as f32, y_off + dx * row as f32);
+                x = 0.0;
+                y = 0.0;
+                x2 = 0.0;
+                y2 = 0.0;
+                counter = 0;
 
-            let pix_coord = Complex::new(x_off + col * dx, y_off + row * dx);
-            x = 0.0;
-            y = 0.0;
-            x2 = 0.0;
-            y2 = 0.0;
-            counter = 0;
-
-            while (x2 + y2 < 4.0) && (counter < max_iter) {
-                y = (x + x) * y + pix_coord.img;
-                x = x2 - y2 + pix_coord.re;
-                x2 = x * x;
-                y2 = y * y;
-                counter += 1;
+                while (x2 + y2 < 4.0) && (counter < max_iter) {
+                    y = (x + x) * y + pix_coord.img;
+                    x = x2 - y2 + pix_coord.re;
+                    x2 = x * x;
+                    y2 = y * y;
+                    counter += 1;
+                }
+                unsafe {
+                    let e = self.pixels.get_unchecked_mut((row * self.width + col) as usize);
+                    e.r = if counter < max_iter {0} else {255};
+                    e.b = if counter < max_iter {255} else {0};
+                    e.g = if counter < max_iter {0} else {255};
+                }
             }
-
-            e.r = if counter < max_iter {0} else {255};
-            e.b = if counter < max_iter {255} else {0};
-            e.g = if counter < max_iter {0} else {255};
         }
     }
 
