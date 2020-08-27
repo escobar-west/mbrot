@@ -8,8 +8,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const universe = Universe.new(canvas.width, canvas.height);
-const cval = Complex.new(-0.5, 0.0);
-const dx = 1.0/300;
+const cval = Complex.new(0.377, 0.2);
+const dx = 1.0/640;
 
 universe.render(cval, dx, 500);
 
