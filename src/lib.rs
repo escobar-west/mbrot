@@ -21,6 +21,16 @@ impl Complex {
     pub fn new(re: f32, img: f32) -> Complex {
         Complex{re, img}
     }
+
+
+    pub fn real(&self) -> f32 {
+        self.re
+    }
+
+
+    pub fn imag(&self) -> f32 {
+        self.img
+    }
 }
 
 
@@ -55,7 +65,7 @@ impl Universe {
     }
 
 
-    pub fn render(&mut self, center: Complex, dx:f32, max_iter: u32) {
+    pub fn render(&mut self, center: &Complex, dx: f32, max_iter: u32) {
         let mut x: f32;
         let mut y: f32;
         let mut x2: f32;
@@ -87,7 +97,7 @@ impl Universe {
                 }
                 unsafe {
                     pix = self.pixels.get_unchecked_mut(pix_idx);
-                    (*pix).r = if iter_counter % 3 == 0 && iter_counter < max_iter {255} else {0};
+                    (*pix).r = if iter_counter % 3 == 0 && iter_counter < max_iter {100} else {0};
                     (*pix).b = if iter_counter % 3 == 1 && iter_counter < max_iter {255} else {0};
                     (*pix).g = if iter_counter % 3 == 2 && iter_counter < max_iter {255} else {0};
                 }
