@@ -87,9 +87,9 @@ impl Universe {
                 }
                 unsafe {
                     pix = self.pixels.get_unchecked_mut(pix_idx);
-                    (*pix).r = if iter_counter < max_iter {111} else {0};
-                    (*pix).b = if iter_counter < max_iter {255} else {0};
-                    (*pix).g = if iter_counter < max_iter {255} else {0};
+                    (*pix).r = if iter_counter % 3 == 0 && iter_counter < max_iter {255} else {0};
+                    (*pix).b = if iter_counter % 3 == 1 && iter_counter < max_iter {255} else {0};
+                    (*pix).g = if iter_counter % 3 == 2 && iter_counter < max_iter {255} else {0};
                 }
                 pix_coord.re += dx;
                 pix_idx += 1;
