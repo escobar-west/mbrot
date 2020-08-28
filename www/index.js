@@ -14,9 +14,9 @@ x_canvas.width = m_canvas.width;
 x_canvas.height = m_canvas.height;
 
 const universe = Universe.new(x_canvas.width, x_canvas.height);
-var center = Complex.new(0.377, 0.2);
-var dx = 1.0/640;
-var max_iter = 500;
+var center = Complex.new(0.0, 0.0);
+var dx = 1.0/300;
+var max_iter = 1000;
 
 var box = null;
 
@@ -48,6 +48,9 @@ x_canvas.onmouseup = function(e) {
     const y_rat = Math.abs(box[3] - box[1]) * 1.0 / m_canvas.width;
     dx = dx * Math.max(x_rat, y_rat);
 
+    console.log('re: ', re);
+    console.log('img: ', img);
+    console.log('dx :', dx);
     universe.render(center, dx, max_iter);
 
     box = null;

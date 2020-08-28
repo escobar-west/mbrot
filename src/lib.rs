@@ -11,24 +11,24 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub struct Complex {
-    re: f32,
-    img: f32,
+    re: f64,
+    img: f64,
 }
 
 
 #[wasm_bindgen]
 impl Complex {
-    pub fn new(re: f32, img: f32) -> Complex {
+    pub fn new(re: f64, img: f64) -> Complex {
         Complex{re, img}
     }
 
 
-    pub fn real(&self) -> f32 {
+    pub fn real(&self) -> f64 {
         self.re
     }
 
 
-    pub fn imag(&self) -> f32 {
+    pub fn imag(&self) -> f64 {
         self.img
     }
 }
@@ -65,15 +65,15 @@ impl Universe {
     }
 
 
-    pub fn render(&mut self, center: &Complex, dx: f32, max_iter: u32) {
-        let mut x: f32;
-        let mut y: f32;
-        let mut x2: f32;
-        let mut y2: f32;
+    pub fn render(&mut self, center: &Complex, dx: f64, max_iter: u32) {
+        let mut x: f64;
+        let mut y: f64;
+        let mut x2: f64;
+        let mut y2: f64;
         let mut iter_counter: u32;
 
-        let x_off = center.re - dx * self.width as f32 * 0.5;
-        let y_off = center.img - dx * self.height as f32 * 0.5;
+        let x_off = center.re - dx * self.width as f64 * 0.5;
+        let y_off = center.img - dx * self.height as f64 * 0.5;
 
         let mut pix: *mut RGBA;
         let mut pix_idx: usize = 0;
