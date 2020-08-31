@@ -1,7 +1,7 @@
-import init, {Universe, Complex} from './pkg/mbrot.js';
+const {Universe, Complex} = wasm_bindgen;
 
 async function run() {
-    let wasm = await init();
+    wasm = await wasm_bindgen('./pkg/mbrot_bg.wasm');
 
     const m_canvas = document.getElementById('mbrot-canvas');
     const x_canvas = document.getElementById('ux-canvas');
