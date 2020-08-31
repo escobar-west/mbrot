@@ -14,6 +14,8 @@ async function run() {
 
     x_canvas.width = m_canvas.width;
     x_canvas.height = m_canvas.height;
+    x_ctx.lineWidth = 1;
+    x_ctx.strokeStyle= '#FF3B03';
 
     const universe = Universe.new(x_canvas.width, x_canvas.height);
     var center = Complex.new(0.0, 0.0);
@@ -23,16 +25,14 @@ async function run() {
     var box = null;
 
     x_canvas.onmousedown = function(e) {
-        if (box == null) {
+        if (box === null) {
             box = [e.clientX, e.clientY, 0, 0];
         }
     };
 
     x_canvas.onmousemove = function(e) {
         if (box != null) {
-            x_ctx.lineWidth = 1;
             x_ctx.clearRect(0, 0, x_canvas.width, x_canvas.height);
-            x_ctx.strokeStyle= '#FF3B03';
             box[2] = e.clientX;
             box[3] = e.clientY;
             x_ctx.strokeRect(box[0], box[1], box[2]-box[0], box[3]-box[1]);
@@ -40,8 +40,8 @@ async function run() {
     };
 
     x_canvas.onmouseup = function(e) {
-        const box_center_x = (box[0] + box[2]) / 2;
-        const box_center_y = (box[1] + box[3]) / 2;
+        const box_center_x = (box[0] + box[2]) * 0.5;
+        const box_center_y = (box[1] + box[3]) * 0.5;
         const re = center.real() + dx * (box_center_x - m_canvas.width * 0.5);
         const img = center.imag() + dx * (box_center_y - m_canvas.height * 0.5);
 
