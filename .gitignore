@@ -1,4 +1,6 @@
 *swp
+*tar.gz
+*sh
 /target
 **/*.rs.bk
 Cargo.lock
