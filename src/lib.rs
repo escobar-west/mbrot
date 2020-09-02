@@ -122,13 +122,11 @@ impl Universe {
 }
 
 fn get_gradient(iter: u32) -> RGBA {
-    let mut n_colors: u8 = 255;
+    const N_COLORS: u8 = 252; // 42 * 6
+    const GRADS_PER_COLOR: u8 = N_COLORS / 6;
+    const COLOR_STEP: u8 = 255 / GRADS_PER_COLOR;
 
-    let grad_length: u8 = n_colors / 6;
-    n_colors = grad_length * 6;
-    let color_step: u8 = 255 / grad_length;
-
-    let iter = (iter % n_colors as u32) as u8;
+    let iter = (iter % N_COLORS as u32) as u8;
     let mut output = RGBA {
         r: 0,
         g: 0,
@@ -136,30 +134,30 @@ fn get_gradient(iter: u32) -> RGBA {
         a: 255,
     };
 
-    if iter < grad_length {
+    if iter < GRADS_PER_COLOR {
         // red to yellow
         output.r = 255;
-        output.g = color_step * iter;
-    } else if iter < 2 * grad_length {
+        output.g = COLOR_STEP * iter;
+    } else if iter < 2 * GRADS_PER_COLOR {
         // yellow to green
         output.g = 255;
-        output.r = 255 - color_step * (iter - grad_length);
-    } else if iter < 3 * grad_length {
+        output.r = 255 - COLOR_STEP * (iter - GRADS_PER_COLOR);
+    } else if iter < 3 * GRADS_PER_COLOR {
         // green to cyan
         output.g = 255;
-        output.b = color_step * (iter - 2 * grad_length);
-    } else if iter < 4 * grad_length {
+        output.b = COLOR_STEP * (iter - 2 * GRADS_PER_COLOR);
+    } else if iter < 4 * GRADS_PER_COLOR {
         // cyan to blue
         output.b = 255;
-        output.g = 255 - color_step * (iter - 3 * grad_length);
-    } else if iter < 5 * grad_length {
+        output.g = 255 - COLOR_STEP * (iter - 3 * GRADS_PER_COLOR);
+    } else if iter < 5 * GRADS_PER_COLOR {
         // blue to violet
         output.b = 255;
-        output.r = color_step * (iter - 4 * grad_length);
-    } else if iter < 6 * grad_length {
+        output.r = COLOR_STEP * (iter - 4 * GRADS_PER_COLOR);
+    } else if iter < 6 * GRADS_PER_COLOR {
         // violet to red
         output.r = 255;
-        output.b = 255 - color_step * (iter - 5 * grad_length);
+        output.b = 255 - COLOR_STEP * (iter - 5 * GRADS_PER_COLOR);
     }
     output
 }

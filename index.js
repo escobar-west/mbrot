@@ -3,76 +3,41 @@ const {Universe, Complex} = wasm_bindgen;
 async function run() {
     wasm = await wasm_bindgen('./pkg/mbrot_bg.wasm');
 
-    const m_canvas = document.getElementById('mbrot-canvas');
-    const x_canvas = document.getElementById('ux-canvas');
+    const canvas = document.getElementById('mbrot-canvas');
+    const ctx = canvas.getContext('2d');
 
-    const m_ctx = m_canvas.getContext('2d');
-    const x_ctx = x_canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    m_canvas.width = window.innerWidth;
-    m_canvas.height = window.innerHeight;
-
-    x_canvas.width = m_canvas.width;
-    x_canvas.height = m_canvas.height;
-    x_ctx.lineWidth = 1;
-    x_ctx.strokeStyle= '#FF3B03';
-
-    const universe = Universe.new(x_canvas.width, x_canvas.height);
+    const universe = Universe.new(canvas.width, canvas.height);
     var center = Complex.new(0.0, 0.0);
     var dx = 1.0/300;
     var max_iter = 1000;
 
-    var box = null;
+    const draw = (center, dx, max_iter) => {
+        universe.render(center, dx, max_iter);
+        const pixels = new Uint8ClampedArray(wasm.memory.buffer,
+                               universe.pixels(),
+                               4*canvas.width*canvas.height);
 
-    x_canvas.onmousedown = function(e) {
-        if (box === null) {
-            box = [e.clientX, e.clientY, 0, 0];
-        }
+        const image = new ImageData(pixels, canvas.width, canvas.height);
+        ctx.putImageData(image, 0, 0);
     };
 
-    x_canvas.onmousemove = function(e) {
-        if (box != null) {
-            x_ctx.clearRect(0, 0, x_canvas.width, x_canvas.height);
-            box[2] = e.clientX;
-            box[3] = e.clientY;
-            x_ctx.strokeRect(box[0], box[1], box[2]-box[0], box[3]-box[1]);
-        }
-    };
-
-    x_canvas.onmouseup = function(e) {
-        const box_center_x = (box[0] + box[2]) * 0.5;
-        const box_center_y = (box[1] + box[3]) * 0.5;
-        const re = center.real() + dx * (box_center_x - m_canvas.width * 0.5);
-        const img = center.imag() + dx * (box_center_y - m_canvas.height * 0.5);
+    const canvas_click = async function(e) {
+        canvas.removeEventListener('click', canvas_click, false);
+        const re = center.real() + dx * (e.clientX - canvas.width * 0.5);
+        const img = center.imag() + dx * (e.clientY - canvas.height * 0.5);
 
         center = Complex.new(re, img);
-        const x_rat = Math.abs(box[2] - box[0]) * 1.0 / m_canvas.width;
-        const y_rat = Math.abs(box[3] - box[1]) * 1.0 / m_canvas.width;
-        dx = dx * Math.max(x_rat, y_rat);
+        dx = dx * 0.25;
 
-        universe.render(center, dx, max_iter);
-
-        box = null;
-        x_ctx.clearRect(0, 0, x_canvas.width, x_canvas.height);
+        draw(center, dx, max_iter);
+        await new Promise(r => setTimeout(r, 1));
+        canvas.addEventListener('click', canvas_click, false);
     };
 
-    const draw = () => {
-        const pixelPtr = universe.pixels();
-        const pixels = new Uint8ClampedArray(wasm.memory.buffer,
-                               pixelPtr,
-                               4*m_canvas.width*m_canvas.height);
-
-        const image = new ImageData(pixels, m_canvas.width, m_canvas.height);
-        m_ctx.putImageData(image, 0, 0);
-    };
-
-    const renderLoop = () => {
-        draw();
-        requestAnimationFrame(renderLoop);
-    };
-
-    universe.render(center, dx, max_iter);
-    draw();
-    renderLoop();
+    canvas.addEventListener('click', canvas_click, false);
+    draw(center, dx, max_iter);
 }
 run();
